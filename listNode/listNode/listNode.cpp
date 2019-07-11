@@ -50,7 +50,16 @@ public:
 		assert(s != NULL);
 		Tail->next = s;
 		Tail = s;
-		
+	}
+	void PrintList()const
+	{
+		ListNode *p = Head->next;
+		while (p != NULL)
+		{
+			p->data->Print();
+			p = p->next;
+		}
+		cout << "Nul,"<<endl;
 	}
 	~List(){}
 private:
@@ -66,7 +75,7 @@ public:
 public:
 	void Print()const//IntObjects继承了Object父类就必须实现他的纯虚函数。
 	{
-
+		cout << data << "-->";
 	}
 	~IntObjects()
 	{
@@ -84,4 +93,5 @@ int main()
 		IntObjects* pi = new IntObjects(i);
 		mylist.Push_Back(pi);
 	}
+	mylist.PrintList();
 }
