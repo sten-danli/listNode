@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include<assert.h>
 using namespace std;
@@ -59,7 +60,7 @@ public:
 			p->data->Print();
 			p = p->next;
 		}
-		cout << "Nul,"<<endl;
+		cout << "Nul."<<endl;
 	}
 	~List(){}
 private:
@@ -84,6 +85,35 @@ private:
 	int data;
 };
 //////////////////////////////////////////////////////////////////
+class StringObject :public Objects
+{
+public:
+	StringObject(const char* str)
+	{
+		if (str == NULL)
+		{
+			data = new char[1];
+			data[0] = '\0';
+		}
+		else
+		{
+			data = new char[strlen(str) + 1];
+			strcpy(data,str);
+		}
+	}
+	void Print()const
+	{
+		cout<<"\""<<data<<"\"";
+	}
+	~StringObject()
+	{
+
+	}
+private:
+	char* data;
+};
+
+/////////////////////////////////////////////////////////////////
 
 int main()
 {
@@ -94,4 +124,13 @@ int main()
 		mylist.Push_Back(pi);
 	}
 	mylist.PrintList();
+	
+	List youlist;
+	const char* str[] = {"abc","def","ghijk","lmnopq","RsT"};
+	for (int j = 0; j < 5; ++j)
+	{
+		StringObject* ps = new StringObject(str[j]);
+		youlist.Push_Back(ps);
+	}
+	youlist.PrintList();
 }
