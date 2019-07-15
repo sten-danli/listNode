@@ -1,17 +1,17 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
+#include<iostream>
 #include<assert.h>
 using namespace std;
 
-class Objects
+class Object
 {
 public:
-	Objects()
-	{}
-	virtual ~Objects()
-	{}
+	Object(){}
+	virtual~Object(){}
 public:
-	virtual void Print()const = 0;//纯虚函数的另外名字叫接口
+	virtual  void Print()const = 0;
+	virtual bool Compare(Object *pobj)const = 0;
+	
 };
 class List;
 class ListNode
@@ -23,21 +23,15 @@ public:
 		data = NULL;
 		next = NULL;
 	}
-	ListNode(Objects* pobj)
+	ListNode(Object* p)
 	{
-		data = pobj;
+		data = p;
 		next = NULL;
 	}
-	~ListNode()
-	{
-
-	}
 private:
-	Objects* data;
+	Object*	data;
 	ListNode* next;
-
 };
-
 class List
 {
 public:
@@ -45,92 +39,126 @@ public:
 	{
 		Head = Tail = new ListNode;
 	}
-	void Push_Back(Objects* p)
+public:
+	void Push_Back(Object* pobj)
 	{
-		ListNode* s = new ListNode(p);
+		ListNode* s = new ListNode(pobj);
 		assert(s != NULL);
 		Tail->next = s;
 		Tail = s;
 	}
-	void PrintList()const
+public:
+	void Printlist()const
 	{
-		ListNode *p = Head->next;
+		ListNode* p = Head->next;
 		while (p != NULL)
 		{
 			p->data->Print();
 			p = p->next;
 		}
-		cout << "Nul."<<endl;
+		cout << "NUL" << endl;
 	}
-	~List(){}
+public:
+	void InsertOrder(Object* pobj)
+	{
+		ListNode *s = new ListNode(pobj);
+		ListNode *phead = Head;
+		ListNode* p = Head->next;
+		while (p!=NULL && p->data->Compare(s->data))
+		{
+			phead = p;
+			p = p->next;
+		}
+		s->next = p;
+		phead->next = s;
+		if (phead == NULL)
+			Tail = s;
+	}
 private:
 	ListNode* Head;
 	ListNode* Tail;
 };
-///////////////////////////////////////////////////////////////////
-class IntObjects : public Objects
+///////////////////////////////////////////////////
+class intObjects : public Object
 {
 public:
-	IntObjects(int d = 0): data(d)
-	{}
-public:
-	void Print()const//IntObjects继承了Object父类就必须实现他的纯虚函数。
+	intObjects(int d=0):data(d){}
+	~intObjects(){}
+	void Print()const
 	{
 		cout << data << "-->";
 	}
-	~IntObjects()
+public:
+	 bool Compare(Object *pobj)const
 	{
+		 intObjects* pi = dynamic_cast<intObjects*>(pobj);
+		 assert(pi != NULL);
+		 return data > pi->data;
 	}
 private:
 	int data;
 };
-//////////////////////////////////////////////////////////////////
-class StringObject :public Objects
-{
-public:
-	StringObject(const char* str)
-	{
-		if (str == NULL)
-		{
-			data = new char[1];
-			data[0] = '\0';
-		}
-		else
-		{
-			data = new char[strlen(str) + 1];
-			strcpy(data,str);
-		}
-	}
-	void Print()const
-	{
-		cout<<"\""<<data<<"\"";
-	}
-	~StringObject()
-	{
-
-	}
-private:
-	char* data;
-};
-
-/////////////////////////////////////////////////////////////////
-
+////////////////////////////////////////////////////
+//class strObjects : public Object
+//{
+//public:
+//	strObjects(const char* str)
+//	{
+//		if (str == NULL)
+//		{
+//			data = new char[1];
+//			data[0] = '\0';
+//		}
+//		else
+//		{
+//			data = new char[strlen(str) + 1];
+//			strcpy(data,str);
+//		}
+//	}
+//	void Print()const
+//	{
+//		cout << data << "-->" ;
+//	}
+//private: 
+//	char* data;
+//
+//};
+/////////////////////////////////////////////////////
 int main()
 {
-	List mylist;
-	for (int i = 1; i <= 5; ++i)
+	List intList;
+
+	intObjects* pi;
+	pi = new intObjects(3);
+	intList.InsertOrder(pi);
+
+	pi = new intObjects(5);
+	intList.InsertOrder(pi);
+
+	pi = new intObjects(2);
+	intList.InsertOrder(pi);
+
+	pi = new intObjects(4);
+	intList.InsertOrder(pi);
+
+	intList.Printlist();
+
+	/*List intList;
+	for (int i = 0; i < 5; ++i)
 	{
-		IntObjects* pi = new IntObjects(i);
-		mylist.Push_Back(pi);
+		intObjects* ip = new intObjects(i);
+		intList.Push_Back(ip);
 	}
-	mylist.PrintList();
+	intList.Printlist();*/
+
+
+	/*List mylist;
+	const char* str[] = {"World, ","i am Lidan,","Hello","the new Gen!"};
+	for (int i = 0; i < 4; ++i)
+	{
+		strObjects* sp = new strObjects(str[i]);
+		mylist.Push_Back(sp);
+	}
+	mylist.Printlist();*/
 	
-	List youlist;
-	const char* str[] = {"abc","def","ghijk","lmnopq","RsT"};
-	for (int j = 0; j < 5; ++j)
-	{
-		StringObject* ps = new StringObject(str[j]);
-		youlist.Push_Back(ps);
-	}
-	youlist.PrintList();
 }
