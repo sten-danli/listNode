@@ -63,7 +63,7 @@ public:
 	{
 		ListNode *s = new ListNode(pobj);
 		ListNode *phead = Head;
-		ListNode* p = Head->next;
+		ListNode *p = Head->next;
 		while (p!=NULL && p->data->Compare(s->data))
 		{
 			phead = p;
@@ -93,36 +93,46 @@ public:
 	{
 		 intObjects* pi = dynamic_cast<intObjects*>(pobj);
 		 assert(pi != NULL);
-		 return data > pi->data;
+		 return data < pi->data;
 	}
 private:
 	int data;
 };
 ////////////////////////////////////////////////////
-//class strObjects : public Object
-//{
-//public:
-//	strObjects(const char* str)
-//	{
-//		if (str == NULL)
-//		{
-//			data = new char[1];
-//			data[0] = '\0';
-//		}
-//		else
-//		{
-//			data = new char[strlen(str) + 1];
-//			strcpy(data,str);
-//		}
-//	}
-//	void Print()const
-//	{
-//		cout << data << "-->" ;
-//	}
-//private: 
-//	char* data;
-//
-//};
+class strObjects : public Object
+{
+public:
+	strObjects(const char* str)
+	{
+		if (str == NULL)
+		{
+			data = new char[1];
+			data[0] = '\0';
+		}
+		else
+		{
+			data = new char[strlen(str) + 1];
+			strcpy(data,str);
+		}
+	}
+	void Print()const
+	{
+		cout << data << "-->" ;
+	}
+	bool Compare(Object* ps)const
+	{
+		strObjects* p = dynamic_cast<strObjects*>(ps);
+		assert(ps != NULL);
+		int result;
+		result = strcmp(data, p->data);
+		if (result >= 0)
+			return false;
+		return true;
+	}
+private: 
+	char* data;
+
+};
 /////////////////////////////////////////////////////
 int main()
 {
@@ -152,13 +162,14 @@ int main()
 	intList.Printlist();*/
 
 
-	/*List mylist;
+	List mylist;
 	const char* str[] = {"World, ","i am Lidan,","Hello","the new Gen!"};
 	for (int i = 0; i < 4; ++i)
 	{
 		strObjects* sp = new strObjects(str[i]);
 		mylist.Push_Back(sp);
+		mylist.InsertOrder(sp);
 	}
-	mylist.Printlist();*/
+	mylist.Printlist();
 	
 }
